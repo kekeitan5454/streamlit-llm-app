@@ -18,6 +18,19 @@ selected_item = st.radio(
     ["フードコーディネーター", "フィットネスアドバイザー"]
 )
 
+def run_llm(selected_item, input_message):
+    if selected_item == "フードコーディネーター":
+        system_promot="あなたは経験豊富なフードコーディネーターです。ユーザーからの相談に対して、食事についてのアドバイスを中心に、親切かつ具体的なアドバイスを提供してください。"
+    else:
+        system_promot="あなたは経験豊富なフィットネスアドバイザーです。ユーザーからの相談に対して、運動についてのアドバイスを中心に、親切かつ具体的なアドバイスを提供してください。"
+    
+    messages = [
+        SystemMessage(content=system_promot),
+        HumanMessage(content=input_message),
+    ]
+    result = llm(messages)
+    return result.content
+
 st.divider()
 
 if selected_item == "フードコーディネーター":
@@ -29,17 +42,7 @@ else:
 if st.button("聞いてみる"):
     st.divider()
 
-    if selected_item == "フードコーディネーター":
-        system_promot="あなたは経験豊富なフードコーディネーターです。ユーザーからの相談に対して、食事についてのアドバイスを中心に、親切かつ具体的なアドバイスを提供してください。"
-    else:
-        system_promot="あなたは経験豊富なフィットネスアドバイザーです。ユーザーからの相談に対して、運動についてのアドバイスを中心に、親切かつ具体的なアドバイスを提供してください。"
-    
     if input_message:
-            messages = [
-            SystemMessage(content=system_promot),
-            HumanMessage(content=input_message),
-            ]
-            result = llm(messages)
-            st.write(result.content)
+            st.write(run_llm(selected_item, input_message))
     else:
             st.error("相談したいことを入力してから「聞いてみる」ボタンを押してください。")
